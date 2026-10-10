@@ -68,6 +68,11 @@ def get_product_count(url):
     }
 
     response = requests.get(url, headers=headers, timeout=30)
+
+    if response.status_code == 404:
+        # Sec-Fetchを送っていないせい？手動だと普通に表示されるのに、検索結果ゼロのとき404を返される
+        return 0
+
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
