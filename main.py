@@ -28,7 +28,9 @@ def read_config():
         if key not in config:
             raise ValueError(f"config.txtに{key}がありません。")
 
-    config["TargetPrice"] = int(config["TargetPrice"])
+    #TargetPrice が空の場合に対応
+    value = config["TargetPrice"].strip()
+    config["TargetPrice"] = int(value) if value else None
     config["Trigger"] = config["Trigger"].upper()
 
     if config["Trigger"] not in ("ON", "OFF"):
@@ -38,7 +40,10 @@ def read_config():
 
 
 def make_search_url(base_url, target_price):
-    """検索URLに価格上限を設定する。"""
+    """検索URLに価格を設定する。TargetPriceが空白なら元のURLを返す。"""
+    if target_price is None:
+        return base_url
+    
     parts = urlsplit(base_url)
 
     params = [
@@ -70,7 +75,7 @@ def get_product_count(url):
     response = requests.get(url, headers=headers, timeout=30)
 
     if response.status_code == 404:
-        # Sec-Fetchを送っていないせい？手動だと普通に表示されるのに、検索結果ゼロのとき404を返される
+        #Sec-Fetchを送っていないせい？手動だと普通に表示されるのに、検索結果ゼロのとき404を返される
         return 0
 
     response.raise_for_status()
@@ -106,9 +111,14 @@ def show_notification(count, target_price, search_url):
         pady=20,
     ).pack()
 
+    if target_price is None:
+        price_text = "設定価格：指定なし"
+    else:
+        price_text = f"設定価格：{target_price:,}円以下"
+
     tk.Label(
         root,
-        text=f"設定価格：{target_price:,}円以下",
+        text=price_text,
         font=("Meiryo UI", 11),
     ).pack()
 
