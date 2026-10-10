@@ -111,6 +111,7 @@ def show_notification(count, target_price, search_url):
         pady=20,
     ).pack()
 
+    #TaragetPriceが空白の場合に対応
     if target_price is None:
         price_text = "設定価格：指定なし"
     else:
