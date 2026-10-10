@@ -1,0 +1,4 @@
+SearchUrl=https://kakaku.com/pc/gaming-mouse/itemlist.aspx?lid=shop_pricemenu_leftnavi_pricerangesearch_V087
+TargetPrice=3000
+LogFile=D:\Log\kakakulog.txt
+Trigger=ON
